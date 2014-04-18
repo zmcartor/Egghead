@@ -22,6 +22,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
+
+var debug = require('debug')('my-application');
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+socketListener = io.listen(server);
+socketListener.sockets.on('connection', function (socket) {
+  console.log("oh hello connection!");
+});
+
+app.post('/submitScore',function(req, res){
+  // TODO check the secret token!
+  console.log(req.body);
+  // TODO validate data, lol
+  socketListener.sockets.emit('newScore', req.body);
+  res.end();
+});
+
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -53,14 +74,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
-var debug = require('debug')('my-application');
-app.set('port', process.env.PORT || 3000);
 
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
-});
 
-var io = require('socket.io').listen(server);
-io.sockets.on('connection', function (socket) {
-  console.log("oh hello connection!");
-});
