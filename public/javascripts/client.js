@@ -12,18 +12,19 @@ egghead.scoreRow = Backbone.Model.extend({
 egghead.scoreCollection = Backbone.Collection.extend({
   model: egghead.scoreRow,
   initialize: function() {
-    //this.listenTo(this, "add", this.checkHighScore);
+    this.listenTo(this, "add", this.checkHighScore);
   },
 
   checkHighScore : function(newModel){
     this.sort();
+    // TODO this doesn't work ATM
     if(parseInt(newModel.get('score'), 10) > parseInt(this.at(0).get('score'), 10) ){
       egghead.eventBus.trigger("newHighScore", parseInt(newModel.get('score'), 10) );
     }
   },
 
-  comparator: function(score) {
-    return this.get('score');
+  comparator: function(model) {
+    return -model.get('score');
   }
 
 });
@@ -45,16 +46,15 @@ egghead.scoreRow = Backbone.View.extend({
 
 
 $(function(){
-var scoreCollection = new egghead.scoreCollection();
-var socket = io.connect('http://localhost');
+var scoreCollection = new egghead.scoreCollection() ,
+     socket = io.connect('http://localhost') ,
+     $tbody = $('tbody');
 socket.on('newScore', function (data) {
+  $tbody.fadeOut().empty();
   scoreCollection.add(data);
   scoreCollection.each(function(scoreModel) {
-    var view = new egghead.scoreRow({model: scoreModel});
-    console.log(view);
-    $('body').append(view.el);
+    $tbody.append(new egghead.scoreRow({model: scoreModel}).el);
   });
-
-
+  $tbody.fadeIn();
 });
 });
