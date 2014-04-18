@@ -12,7 +12,7 @@ egghead.scoreRow = Backbone.Model.extend({
 egghead.scoreCollection = Backbone.Collection.extend({
   model: egghead.scoreRow,
   initialize: function() {
-    this.listenTo(this, "add", this.checkHighScore);
+    //this.listenTo(this, "add", this.checkHighScore);
   },
 
   checkHighScore : function(newModel){
@@ -33,11 +33,14 @@ egghead.scoreRow = Backbone.View.extend({
     this.render();
   },
 
+  tagName: 'tr',
+
   render: function(){
-    var template = _.template("template string" , this.model.toJSON());
-    this.$el.html(template());
-  },
-  el: 'tr'
+    var templateString = "<td><%= score %></td><td><%= name %></td>";
+    var template = _.template(templateString, this.model.toJSON());
+    $(this.el).html(template);
+    return this;
+  }
 });
 
 
@@ -46,7 +49,12 @@ var scoreCollection = new egghead.scoreCollection();
 var socket = io.connect('http://localhost');
 socket.on('newScore', function (data) {
   scoreCollection.add(data);
-  console.log('added some data!');
-  console.log(scoreCollection);
+  scoreCollection.each(function(scoreModel) {
+    var view = new egghead.scoreRow({model: scoreModel});
+    console.log(view);
+    $('body').append(view.el);
+  });
+
+
 });
 });
