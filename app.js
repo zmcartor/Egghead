@@ -36,10 +36,10 @@ socketListener.sockets.on('connection', function (socket) {
 });
 
 app.post('/submitScore',function(req, res){
-  // TODO check the secret token!
-  console.log(req.body);
-  // TODO validate data, lol
-  socketListener.sockets.emit('newScore', req.body);
+var score = req.body;
+if (score.secret === 'hotdogs'){
+  socketListener.sockets.emit('newScore', {name: score.name , score: parseInt(score.score, 10)});
+}
   res.end();
 });
 
