@@ -17,8 +17,8 @@ egghead.scoreCollection = Backbone.Collection.extend({
 
   checkHighScore : function(newModel){
     this.sort();
-    // TODO this doesn't work ATM
-    if(parseInt(newModel.get('score'), 10) > parseInt(this.at(0).get('score'), 10) ){
+    if(newModel.cid === this.at(0).cid){
+      console.log('HIGH SCORE!!');
       egghead.eventBus.trigger("newHighScore", parseInt(newModel.get('score'), 10) );
     }
   },
