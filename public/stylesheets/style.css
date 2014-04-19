@@ -1,8 +1,33 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: rgb(218,112,214);
 }
 
 a {
   color: #00B7FF;
+}
+
+table {
+width : 700px;
+margin: auto;
+text-align: center;
+color: rgb(252, 248 152);
+border: solid 1px rgb(255, 251, 153);
+}
+
+tr {
+background-color: rgb(252,248,152);
+}
+
+table thead tr {
+background-color: rgb(130, 200, 200);
+}
+
+h1.title {
+color: rgb(113, 227, 170);
+width: 140px;
+text-align: center;
+margin: auto auto;
+margin-bottom: 40px;
 }
